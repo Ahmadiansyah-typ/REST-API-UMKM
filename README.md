@@ -1,135 +1,367 @@
 # REST API UMKM — CodeIgniter 4 & Flutter
 
-Proyek praktikum Topic 10: REST API dan JSON Parsing. Backend menyediakan REST API CRUD untuk data UMKM menggunakan CodeIgniter 4. Aplikasi Flutter mengonsumsi API menggunakan package `http`, memetakan JSON ke model Dart, dan memakai GetX untuk state management.
+Aplikasi direktori UMKM (Usaha Mikro, Kecil, dan Menengah) berbasis Flutter yang terintegrasi dengan REST API menggunakan CodeIgniter 4 dan database MySQL/MariaDB.
 
-> **Status saat paket ini dibuat:** source backend dan frontend sudah disiapkan. Build, koneksi database, request Postman, dan run Flutter belum diverifikasi pada mesin ini karena Composer dan Flutter SDK tidak tersedia. Jangan menganggap screenshot atau test case pada dokumen sebagai hasil pengujian yang sudah dilakukan.
+Proyek ini dibuat untuk memenuhi tugas praktikum **Topic 10: REST API dan JSON Parsing**. Aplikasi memungkinkan pengguna melihat daftar UMKM, menambahkan data usaha, memperbarui informasi, dan menghapus data melalui komunikasi REST API dalam format JSON.
 
-## Isi repository
+---
+
+## 📌 Fitur Aplikasi
+
+### Backend — CodeIgniter 4
+- REST API untuk pengelolaan data UMKM.
+- Operasi CRUD (Create, Read, Update, Delete).
+- Validasi data sebelum disimpan.
+- Response API menggunakan format JSON.
+- Integrasi database MySQL/MariaDB.
+
+### Frontend — Flutter
+- Menampilkan daftar UMKM dari REST API.
+- Menambahkan data UMKM melalui formulir.
+- Mengirim dan menerima data dalam format JSON.
+- Parsing JSON ke dalam model Dart.
+- Menggunakan package `http` untuk komunikasi API.
+- Menggunakan GetX untuk state management.
+- Menampilkan informasi nama usaha, pemilik, alamat, kategori, dan kontak.
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+| Teknologi | Keterangan |
+|---|---|
+| PHP 8.2.12 | Bahasa pemrograman backend |
+| CodeIgniter 4 | Framework REST API |
+| Flutter 3.47.1 | Framework frontend |
+| Dart 3.13.1 | Bahasa pemrograman Flutter |
+| MySQL/MariaDB 10.4.32 | Database |
+| Apache | Web server |
+| Postman | Pengujian REST API |
+| GetX | State management |
+| HTTP | Komunikasi antara Flutter dan API |
+
+---
+
+## 📂 Struktur Repository
 
 ```text
 project-rest-api-flutter/
+│
 ├── backend/
 │   ├── app/
-│   │   ├── Config/Routes.php
-│   │   ├── Controllers/Api/UmkmController.php
-│   │   ├── Database/Migrations/2026-11-17-000001_CreateUmkmTable.php
-│   │   └── Models/UmkmModel.php
+│   │   ├── Config/
+│   │   │   └── Routes.php
+│   │   ├── Controllers/
+│   │   │   └── Api/
+│   │   │       └── UmkmController.php
+│   │   ├── Database/
+│   │   │   └── Migrations/
+│   │   └── Models/
+│   │       └── UmkmModel.php
+│   │
 │   ├── .env.example
 │   ├── setup.ps1
 │   ├── setup.sh
 │   └── README.md
+│
 ├── frontend/
 │   ├── lib/
-│   │   ├── app/controllers/
-│   │   ├── app/models/
-│   │   ├── app/routes/
-│   │   ├── app/services/
-│   │   ├── app/views/
+│   │   ├── app/
+│   │   │   ├── controllers/
+│   │   │   ├── models/
+│   │   │   ├── routes/
+│   │   │   ├── services/
+│   │   │   └── views/
 │   │   └── main.dart
+│   │
 │   ├── pubspec.yaml
 │   └── README.md
+│
 ├── docs/
 │   ├── implementation-notes.md
 │   ├── api-test-plan.md
 │   ├── openapi.yaml
 │   └── report-outline.md
-└── postman/UMKM-CRUD.postman_collection.json
+│
+├── postman/
+│   └── UMKM-CRUD.postman_collection.json
+│
+├── .gitignore
+└── README.md
 ```
 
-Folder `backend/app` berisi kode aplikasi yang menimpa/menambahkan bagian pada kerangka CodeIgniter 4. Folder `backend/runtime` akan dibuat oleh skrip setup dan diabaikan Git; folder tersebut berisi kerangka CI4 lengkap beserta `vendor`.
+**Catatan:** Folder `backend/runtime/` dibuat ketika proses setup backend dijalankan. Folder tersebut berisi kerangka aplikasi CodeIgniter 4 lengkap dan dependency Composer sehingga tidak disertakan dalam repository GitHub.
 
-## 1. Menyiapkan backend
+---
 
-Persyaratan: PHP yang memenuhi kebutuhan CodeIgniter 4, Composer, MySQL/MariaDB, dan ekstensi PHP yang dibutuhkan driver database.
+## ⚙️ Instalasi dan Konfigurasi
 
-### Windows PowerShell
+### 1. Clone Repository
 
-Dari root repository:
+```bash
+git clone https://github.com/Ahmadiansyah-typ/REST-API-UMKM.git
+```
+
+Masuk ke direktori proyek:
+
+```bash
+cd REST-API-UMKM
+```
+
+### 2. Konfigurasi Backend
+
+Pastikan sudah menginstal:
+- PHP 8.2 atau versi yang kompatibel.
+- Composer.
+- MySQL atau MariaDB.
+- Ekstensi PHP yang dibutuhkan CodeIgniter 4.
+
+Jalankan setup backend menggunakan PowerShell (Windows):
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\backend\setup.ps1
 ```
 
-### macOS / Linux
+Untuk Linux/macOS:
 
 ```bash
 bash backend/setup.sh
 ```
 
-Skrip mengunduh kerangka resmi `codeigniter4/appstarter` dengan Composer, menyalin source praktikum ke kerangka tersebut, lalu membuat `backend/runtime/.env` dari contoh konfigurasi.
+Skrip setup akan menyiapkan kerangka CodeIgniter 4 dan menyalin source backend ke dalam direktori runtime.
 
-Buat database MySQL terlebih dahulu:
+### 3. Konfigurasi Database
+
+Buat database melalui phpMyAdmin atau MySQL:
 
 ```sql
-CREATE DATABASE db_umkm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE db_umkm
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 ```
 
-Edit kredensial dan nama database pada `backend/runtime/.env`. Kemudian:
+Salin konfigurasi `.env.example` menjadi `.env` apabila belum dibuat oleh skrip setup.
+
+Atur konfigurasi database pada:
+
+```text
+backend/runtime/.env
+```
+
+Sesuaikan nama database, username, dan password dengan konfigurasi MySQL lokal.
+
+### 4. Menjalankan Backend
+
+Masuk ke direktori runtime:
 
 ```bash
 cd backend/runtime
+```
+
+Jalankan migration:
+
+```bash
 php spark migrate
+```
+
+Periksa daftar route:
+
+```bash
 php spark routes
+```
+
+Jalankan server:
+
+```bash
 php spark serve --host 0.0.0.0 --port 8080
 ```
 
-API lokal: `http://localhost:8080/api/umkm`.
+Backend dapat diakses melalui:
 
-## 2. Menyiapkan Flutter
+```text
+http://localhost:8080
+```
 
-Masuk ke folder frontend, buat platform runner pada mesin pengembang, kemudian pasang dependency:
+Endpoint utama:
+
+```text
+http://localhost:8080/api/umkm
+```
+
+---
+
+## 📱 Menjalankan Aplikasi Flutter
+
+Pastikan Flutter SDK sudah terinstal dan dapat dijalankan melalui terminal.
+
+Masuk ke direktori frontend:
 
 ```bash
 cd frontend
-flutter create --platforms=android,ios,web .
+```
+
+Instal dependency:
+
+```bash
 flutter pub get
 ```
 
-Periksa kembali bahwa file `lib/` dan `pubspec.yaml` dari repository tetap digunakan setelah perintah `flutter create`. Jalankan aplikasi pada Android Emulator:
+Jika platform runner belum tersedia, buat konfigurasi platform sesuai perangkat yang digunakan:
+
+```bash
+flutter create --platforms=android,ios,web .
+```
+
+Jalankan aplikasi:
 
 ```bash
 flutter run
 ```
 
-Base URL default sudah diset untuk Android Emulator (`10.0.2.2`). Untuk alamat lain, jalankan dengan `--dart-define` sesuai panduan di `frontend/README.md`.
+### Konfigurasi Base URL
 
-## 3. Endpoint API
+Sesuaikan alamat API dengan perangkat yang digunakan:
 
-| Method | Endpoint | Fungsi | Status sukses |
+| Perangkat | Base URL |
+|---|---|
+| Android Emulator | `http://10.0.2.2:8080/api` |
+| Browser/Web | `http://localhost:8080/api` |
+| Android Fisik | `http://IP_KOMPUTER:8080/api` |
+
+Pastikan backend berjalan dan perangkat dapat mengakses server API.
+
+Untuk Android fisik, gunakan alamat IP komputer dalam jaringan Wi-Fi yang sama.
+
+---
+
+## 🔗 Dokumentasi Endpoint REST API
+
+API menyediakan empat operasi utama CRUD:
+
+| No. | Method | Endpoint | Fungsi |
 |---|---|---|---|
-| GET | `/api/umkm` | Mengambil seluruh UMKM | 200 |
-| POST | `/api/umkm` | Menambahkan UMKM | 201 |
-| PUT | `/api/umkm/{id}` | Memperbarui UMKM | 200 |
-| DELETE | `/api/umkm/{id}` | Menghapus UMKM | 200 |
+| 1 | GET | `/api/umkm` | Mengambil seluruh data UMKM |
+| 2 | POST | `/api/umkm` | Menambahkan data UMKM |
+| 3 | PUT | `/api/umkm/{id}` | Memperbarui data UMKM berdasarkan ID |
+| 4 | DELETE | `/api/umkm/{id}` | Menghapus data UMKM berdasarkan ID |
 
-Field data: `nama_umkm`, `pemilik`, `alamat`, `kategori`, dan `kontak`. Response mengikuti envelope `success`, `message`, dan `data`; response error menambahkan `errors`.
+### Struktur Data UMKM
 
-Dokumentasi test case dan contoh request terdapat pada:
+| Field | Tipe Data | Keterangan |
+|---|---|---|
+| id | Integer | ID unik UMKM |
+| nama_umkm | String | Nama usaha |
+| pemilik | String | Nama pemilik usaha |
+| alamat | String | Alamat usaha |
+| kategori | String | Kategori usaha |
+| kontak | String | Nomor kontak |
 
-- `docs/api-test-plan.md`
-- `postman/UMKM-CRUD.postman_collection.json`
-- `docs/openapi.yaml`
+### Contoh JSON Request
 
-## 4. Pengujian dan screenshot
-
-Import collection Postman, pastikan server dan database berjalan, lalu uji GET, POST, PUT, dan DELETE. Screenshot harus diambil langsung dari Postman setelah request benar-benar dijalankan. Daftar bukti yang disarankan tersedia dalam `docs/api-test-plan.md`.
-
-## 5. GitHub Public
-
-Setelah membuat repository GitHub Public, dari root repository jalankan:
-
-```bash
-git init
-git add .
-git commit -m "Initial project: REST API UMKM with CI4 and Flutter"
-git branch -M main
-git remote add origin <URL_REPOSITORY_GITHUB_ANDA>
-git push -u origin main
+```json
+{
+  "nama_umkm": "Kopi Praktikum",
+  "pemilik": "Ahmadiansyah",
+  "alamat": "Banjarbaru",
+  "kategori": "Kuliner",
+  "kontak": "081234567890"
+}
 ```
 
-Jangan mengunggah `.env`, `backend/runtime`, `vendor`, `.dart_tool`, atau folder `build`. Jangan mengganti placeholder remote sebelum repository benar-benar dibuat.
+### Contoh JSON Response
 
-## 6. Laporan praktikum
+```json
+{
+  "success": true,
+  "message": "Data UMKM berhasil ditambahkan",
+  "data": {
+    "id": 1,
+    "nama_umkm": "Kopi Praktikum",
+    "pemilik": "Ahmadiansyah",
+    "alamat": "Banjarbaru",
+    "kategori": "Kuliner",
+    "kontak": "081234567890"
+  }
+}
+```
 
-Kerangka isi laporan ada di `docs/report-outline.md`. PDF final belum dibuat karena harus memuat screenshot Postman dan tampilan aplikasi yang benar-benar berasal dari pengujian Anda, serta URL GitHub Public yang sudah dibuat. Jangan mengisi bagian hasil dengan hasil yang belum diverifikasi.
+---
+
+## 🧪 Pengujian REST API
+
+Pengujian REST API dilakukan menggunakan Postman dengan beberapa skenario:
+
+| No. | Skenario Pengujian | Method | Hasil |
+|---|---|---|---|
+| 1 | Mengambil daftar UMKM | GET | Berhasil |
+| 2 | Menambahkan UMKM | POST | Berhasil |
+| 3 | Validasi nama UMKM kosong | POST | Menghasilkan error validasi |
+| 4 | Memperbarui data UMKM | PUT | Berhasil |
+| 5 | Memperbarui ID yang tidak ditemukan | PUT | Menghasilkan error 404 |
+| 6 | Menghapus data UMKM | DELETE | Berhasil |
+| 7 | Menghapus ID yang tidak ditemukan | DELETE | Menghasilkan error 404 |
+
+Pengujian dapat dilakukan menggunakan Postman Collection yang tersedia di:
+
+```text
+postman/UMKM-CRUD.postman_collection.json
+```
+
+Dokumentasi pengujian lebih lengkap tersedia di:
+
+```text
+docs/api-test-plan.md
+```
+
+---
+
+## 🖥️ Tampilan Aplikasi
+
+Aplikasi UMKM Connect memiliki beberapa tampilan utama:
+
+1. **Halaman Daftar UMKM** — Menampilkan seluruh data usaha yang diperoleh dari REST API.
+2. **Halaman Tambah UMKM** — Formulir untuk memasukkan informasi usaha baru.
+3. **Integrasi REST API** — Mengirim dan menerima data melalui HTTP Request dan JSON Response.
+
+---
+
+## 📚 Dokumentasi Tambahan
+
+Beberapa dokumentasi pendukung tersedia di dalam repository:
+
+- `docs/implementation-notes.md` — Catatan implementasi proyek.
+- `docs/api-test-plan.md` — Rencana dan skenario pengujian API.
+- `docs/openapi.yaml` — Dokumentasi spesifikasi endpoint API.
+- `docs/report-outline.md` — Kerangka laporan praktikum.
+- `postman/UMKM-CRUD.postman_collection.json` — Koleksi pengujian Postman.
+
+---
+
+## 🎯 Tujuan Praktikum
+
+Proyek ini bertujuan untuk memahami penerapan REST API dan JSON Parsing dalam pengembangan aplikasi mobile, khususnya:
+
+- Memahami konsep REST API.
+- Mengimplementasikan operasi CRUD.
+- Memahami komunikasi HTTP antara frontend dan backend.
+- Mengirim dan menerima data menggunakan format JSON.
+- Melakukan parsing JSON ke model Dart.
+- Mengintegrasikan aplikasi Flutter dengan backend CodeIgniter 4.
+- Menguji endpoint API menggunakan Postman.
+
+---
+
+## 👨‍💻 Pengembang
+
+**Ahmadiansyah**
+
+Proyek Praktikum — Topic 10: REST API dan JSON Parsing.
+
+**Repository GitHub:**
+
+https://github.com/Ahmadiansyah-typ/REST-API-UMKM
+
+---
+
+*Dibuat untuk memenuhi tugas praktikum REST API dan JSON Parsing.*
