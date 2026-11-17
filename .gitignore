@@ -1,0 +1,65 @@
+
+# ==========================================
+# BACKEND - CODEIGNITER 4
+# ==========================================
+
+# Environment dan data rahasia
+.env
+**/.env
+/backend/runtime/.env
+!.env.example
+!**/.env.example
+
+# Temporary AppStarter
+/backend/.appstarter-temp/
+
+# Composer dependencies
+/backend/runtime/vendor/
+
+# CI4 writable generated files
+/backend/runtime/writable/cache/*
+/backend/runtime/writable/logs/*
+/backend/runtime/writable/session/*
+/backend/runtime/writable/uploads/*
+
+# ==========================================
+# FRONTEND - FLUTTER
+# ==========================================
+
+# Flutter generated files
+/frontend/.dart_tool/
+/frontend/.packages
+/frontend/.flutter-plugins
+/frontend/.flutter-plugins-dependencies
+/frontend/build/
+
+# Android generated files
+/frontend/android/local.properties
+/frontend/.gradle/
+/frontend/android/.gradle/
+/frontend/android/captures/
+
+# iOS generated files
+/frontend/ios/Flutter/Generated.xcconfig
+/frontend/ios/Flutter/flutter_export_environment.sh
+/frontend/ios/Runner/GeneratedPluginRegistrant.*
+
+# Other platforms
+/frontend/macos/Flutter/GeneratedPluginRegistrant.swift
+/frontend/linux/flutter/ephemeral/
+/frontend/windows/flutter/ephemeral/
+
+# iOS dependencies
+/frontend/ios/Pods/
+/frontend/ios/.symlinks/
+
+# ==========================================
+# IDE AND OPERATING SYSTEM
+# ==========================================
+
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

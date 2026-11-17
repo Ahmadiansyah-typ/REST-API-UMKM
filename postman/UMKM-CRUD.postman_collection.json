@@ -1,0 +1,310 @@
+{
+  "info": {
+    "_postman_id": "92e8e13b-cf1e-4fc7-b7c4-000000000001",
+    "name": "REST API UMKM - CI4",
+    "description": "Collection pengujian CRUD UMKM sesuai Modul 10.1 dan response JSON pada Topic 10. Jalankan API CI4 pada localhost:8080 terlebih dahulu.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "umkmId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. GET - Daftar UMKM",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/umkm"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('Envelope JSON benar', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data).to.be.an('array'); });",
+              "if (body.data && body.data.length > 0 && body.data[0].id) pm.collectionVariables.set('umkmId', String(body.data[0].id));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. POST - Tambah UMKM",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "nama_umkm",
+              "value": "Kopi Praktikum",
+              "type": "text"
+            },
+            {
+              "key": "pemilik",
+              "value": "Pemilik Contoh",
+              "type": "text"
+            },
+            {
+              "key": "alamat",
+              "value": "Banjarbaru",
+              "type": "text"
+            },
+            {
+              "key": "kategori",
+              "value": "Kuliner",
+              "type": "text"
+            },
+            {
+              "key": "kontak",
+              "value": "081234567890",
+              "type": "text"
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/umkm"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+              "const body = pm.response.json();",
+              "pm.test('Create sukses dan mengembalikan ID', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data.id).to.exist; });",
+              "if (body.data && body.data.id) pm.collectionVariables.set('umkmId', String(body.data.id));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. POST - Validasi nama kosong (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "nama_umkm",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "kategori",
+              "value": "Kuliner",
+              "type": "text"
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/umkm"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+              "const body = pm.response.json();",
+              "pm.test('Response validasi gagal', function () { pm.expect(body.success).to.eql(false); pm.expect(body.errors).to.have.property('nama_umkm'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. PUT - Perbarui UMKM",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "nama_umkm",
+              "value": "Kopi Praktikum Diperbarui",
+              "type": "text"
+            },
+            {
+              "key": "pemilik",
+              "value": "Pemilik Praktikum",
+              "type": "text"
+            },
+            {
+              "key": "alamat",
+              "value": "Banjarbaru",
+              "type": "text"
+            },
+            {
+              "key": "kategori",
+              "value": "Kuliner",
+              "type": "text"
+            },
+            {
+              "key": "kontak",
+              "value": "081234567890",
+              "type": "text"
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/umkm/{{umkmId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('Update sukses', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data.nama_umkm).to.eql('Kopi Praktikum Diperbarui'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. PUT - ID tidak ditemukan (404)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "nama_umkm",
+              "value": "UMKM Tidak Ada",
+              "type": "text"
+            },
+            {
+              "key": "kategori",
+              "value": "Kuliner",
+              "type": "text"
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/umkm/999999999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+              "const body = pm.response.json();",
+              "pm.test('Error JSON benar', function () { pm.expect(body.success).to.eql(false); pm.expect(body.message).to.exist; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. DELETE - Hapus UMKM",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/umkm/{{umkmId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('Delete sukses', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data.id).to.exist; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. DELETE - ID tidak ditemukan (404)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/umkm/999999999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+              "const body = pm.response.json();",
+              "pm.test('Error JSON benar', function () { pm.expect(body.success).to.eql(false); pm.expect(body.message).to.exist; });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

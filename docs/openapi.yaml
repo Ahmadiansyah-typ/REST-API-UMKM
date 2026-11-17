@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: REST API UMKM
+  version: 1.0.0
+  description: API CRUD data UMKM untuk praktikum REST API CI4 dan Flutter.
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /umkm:
+    get:
+      summary: Mengambil seluruh data UMKM
+      responses:
+        '200':
+          description: Data berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UmkmListResponse'
+    post:
+      summary: Menambahkan data UMKM
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UmkmInput'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UmkmInput'
+      responses:
+        '201':
+          description: Data berhasil ditambahkan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UmkmResponse'
+        '400':
+          description: Validasi gagal
+  /umkm/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Memperbarui data UMKM
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UmkmInput'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UmkmInput'
+      responses:
+        '200':
+          description: Data berhasil diperbarui
+        '400':
+          description: Validasi gagal
+        '404':
+          description: Data tidak ditemukan
+    delete:
+      summary: Menghapus data UMKM
+      responses:
+        '200':
+          description: Data berhasil dihapus
+        '404':
+          description: Data tidak ditemukan
+components:
+  schemas:
+    UmkmInput:
+      type: object
+      required: [nama_umkm]
+      properties:
+        nama_umkm:
+          type: string
+          minLength: 3
+          maxLength: 100
+        pemilik:
+          type: string
+          maxLength: 100
+          nullable: true
+        alamat:
+          type: string
+          nullable: true
+        kategori:
+          type: string
+          maxLength: 50
+          nullable: true
+        kontak:
+          type: string
+          maxLength: 20
+          nullable: true
+    Umkm:
+      allOf:
+        - $ref: '#/components/schemas/UmkmInput'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: integer
+    UmkmResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Umkm'
+    UmkmListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Umkm'
