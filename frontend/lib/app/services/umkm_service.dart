@@ -24,21 +24,20 @@ class UmkmService {
   // Ganti melalui --dart-define untuk iOS Simulator atau perangkat fisik.
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8080/api',
+    defaultValue: 'http://localhost:8080/api',
   );
 
   Uri _endpoint([String suffix = '']) {
     final normalizedBase = baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';
-    return Uri.parse('$normalizedBase${suffix.replaceFirst(RegExp(r'^/'), '')}');
+    return Uri.parse(
+        '$normalizedBase${suffix.replaceFirst(RegExp(r'^/'), '')}');
   }
 
   Future<List<Umkm>> getUmkmList() async {
-    final response = await _client
-        .get(
-          _endpoint('umkm'),
-          headers: const {'Accept': 'application/json'},
-        )
-        .timeout(const Duration(seconds: 15));
+    final response = await _client.get(
+      _endpoint('umkm'),
+      headers: const {'Accept': 'application/json'},
+    ).timeout(const Duration(seconds: 15));
 
     final json = _decodeResponse(response);
     if (response.statusCode != 200 || json['success'] != true) {
@@ -96,12 +95,10 @@ class UmkmService {
   }
 
   Future<Map<String, dynamic>> deleteUmkm(int id) async {
-    final response = await _client
-        .delete(
-          _endpoint('umkm/$id'),
-          headers: const {'Accept': 'application/json'},
-        )
-        .timeout(const Duration(seconds: 15));
+    final response = await _client.delete(
+      _endpoint('umkm/$id'),
+      headers: const {'Accept': 'application/json'},
+    ).timeout(const Duration(seconds: 15));
 
     final json = _decodeResponse(response);
     if (response.statusCode != 200 || json['success'] != true) {
