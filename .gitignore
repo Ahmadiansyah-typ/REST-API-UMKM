@@ -63,3 +63,6 @@
 Thumbs.db
 desktop.ini
 *.log
+
+# Generated CodeIgniter runtime
+/backend/runtime/
